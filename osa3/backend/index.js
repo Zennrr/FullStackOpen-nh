@@ -7,19 +7,13 @@ const cors = require("cors");
 const app = express();
 
 try {
-  // Read database
   const rawData = fs.readFileSync("db.json");
   const database = JSON.parse(rawData);
   let persons = database.persons;
 
-  // Middleware
   app.use(cors());
   app.use(express.json());
-
-  // Serve static files early in the middleware chain
   app.use(express.static("dist"));
-
-  // Morgan logging
   app.use(morgan("tiny"));
 
   morgan.token("post-data", (req) => {
@@ -35,7 +29,6 @@ try {
     )
   );
 
-  // API Routes
   app.get("/api/persons", (request, response) => {
     response.json(persons);
   });
@@ -146,8 +139,7 @@ try {
     `);
   });
 
-  // Start the server
-  const PORT = 3001;
+  const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
