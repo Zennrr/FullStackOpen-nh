@@ -1,39 +1,39 @@
-import { useState, useEffect } from "react";
-import personService from "./services/persons";
-import Filter from "./components/Filter";
-import PersonForm from "./components/PersonForm";
-import Persons from "./components/Persons";
-import Notification from "./components/Notification";
+import { useState, useEffect } from 'react'
+import personService from './services/persons'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [filter, setFilter] = useState("");
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState('')
   const [notification, setNotification] = useState({
     message: null,
     type: null,
-  });
+  })
 
-  const showNotification = (message, type = "success") => {
-    setNotification({ message, type });
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type })
     setTimeout(() => {
-      setNotification({ message: null, type: null });
-    }, 5000);
-  };
+      setNotification({ message: null, type: null })
+    }, 5000)
+  }
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
-      setPersons(initialPersons);
-    });
-  }, []);
+      setPersons(initialPersons)
+    })
+  }, [])
 
   const addPerson = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     const existingPerson = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase()
-    );
+    )
 
     if (existingPerson) {
       if (
@@ -41,7 +41,7 @@ const App = () => {
           `${newName} is already added to phonebook, replace the old number with a new one?`
         )
       ) {
-        const changedPerson = { ...existingPerson, number: newNumber };
+        const changedPerson = { ...existingPerson, number: newNumber }
 
         personService
           .update(existingPerson.id, changedPerson)
@@ -50,98 +50,98 @@ const App = () => {
               persons.map((person) =>
                 person.id !== existingPerson.id ? person : returnedPerson
               )
-            );
-            setNewName("");
-            setNewNumber("");
-            showNotification(`Updated ${returnedPerson.name}'s number`);
+            )
+            setNewName('')
+            setNewNumber('')
+            showNotification(`Updated ${returnedPerson.name}'s number`)
           })
           .catch((error) => {
-            console.log("Error updating person:", error);
+            console.log('Error updating person:', error)
 
             if (error.response && error.response.status === 404) {
               showNotification(
                 `Information of '${existingPerson.name}' has already been removed from server`,
-                "error"
-              );
-              setPersons(persons.filter((p) => p.id !== existingPerson.id));
+                'error'
+              )
+              setPersons(persons.filter((p) => p.id !== existingPerson.id))
             } else {
               showNotification(
                 `Error updating ${existingPerson.name}: ${
-                  error.message || "Unknown error"
+                  error.message || 'Unknown error'
                 }`,
-                "error"
-              );
+                'error'
+              )
             }
-          });
+          })
       }
-      return;
+      return
     }
 
     if (persons.some((person) => person.number === newNumber)) {
       showNotification(
         `The number ${newNumber} is already added to phonebook`,
-        "error"
-      );
-      return;
+        'error'
+      )
+      return
     }
 
     const personObject = {
       name: newName,
       number: newNumber,
-    };
+    }
 
     personService
       .create(personObject)
       .then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
-        showNotification(`Added ${returnedPerson.name}`);
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+        showNotification(`Added ${returnedPerson.name}`)
       })
       .catch((error) => {
-        console.log("Error creating person:", error);
+        console.log('Error creating person:', error.response.data)
         showNotification(
-          `Error adding ${newName}: ${error.message || "Unknown error"}`,
-          "error"
-        );
-      });
-  };
+          `Error: ${error.response.data.error || 'An unknown error occurred'}`,
+          'error'
+        )
+      })
+  }
 
   const deletePerson = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       personService
         .remove(id)
         .then(() => {
-          setPersons(persons.filter((person) => person.id !== id));
-          showNotification(`Deleted ${name}`);
+          setPersons(persons.filter((person) => person.id !== id))
+          showNotification(`Deleted ${name}`)
         })
         .catch(() => {
           showNotification(
             `The person '${name}' was already deleted from server`,
-            "error"
-          );
-          setPersons(persons.filter((person) => person.id !== id));
-        });
+            'error'
+          )
+          setPersons(persons.filter((person) => person.id !== id))
+        })
     }
-  };
+  }
 
   const handleNameChange = (event) => {
-    setNewName(event.target.value);
-  };
+    setNewName(event.target.value)
+  }
 
   const handleNumberChange = (event) => {
-    setNewNumber(event.target.value);
-  };
+    setNewNumber(event.target.value)
+  }
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value);
-  };
+    setFilter(event.target.value)
+  }
 
   const personsToShow = filter
     ? persons.filter((person) =>
-        person.name.toLowerCase().includes(filter.toLowerCase())
-      )
-    : persons;
+      person.name.toLowerCase().includes(filter.toLowerCase())
+    )
+    : persons
 
   return (
     <div>
@@ -165,7 +165,7 @@ const App = () => {
 
       <Persons personsToShow={personsToShow} handleDelete={deletePerson} />
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

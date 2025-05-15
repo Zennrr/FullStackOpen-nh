@@ -6,8 +6,8 @@ const Person = ({ person, handleDelete }) => {
         delete
       </button>
     </div>
-  );
-};
+  )
+}
 
 const Persons = ({ personsToShow, handleDelete }) => {
   return (
@@ -16,7 +16,7 @@ const Persons = ({ personsToShow, handleDelete }) => {
         <Person key={person.id} person={person} handleDelete={handleDelete} />
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default Persons;
+export default Persons
