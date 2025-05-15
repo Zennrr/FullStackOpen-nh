@@ -79,7 +79,7 @@ const App = () => {
 
     if (persons.some((person) => person.number === newNumber)) {
       showNotification(
-        `The number ${newNumber} is already added to phonebook`,
+        `The number ${newNumber} is already added to the phonebook`,
         'error'
       )
       return
