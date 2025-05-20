@@ -1,0 +1,22 @@
+POST http://localhost:3000/api/blogs
+Content-Type: application/json
+
+{
+    "title": "My First Blog",
+    "author": "John Doe",
+    "url": "http://example.com/my-first-blog",
+    "likes": 0
+}
+
+GET http://localhost:3000/api/blogs
+
+GET http://localhost:3000/api/blogs/1
+
+DELETE http://localhost:3000/api/blogs/1
+
+PUT http://localhost:3000/api/blogs/1
+Content-Type: application/json
+
+{
+    "likes": 10
+}
